@@ -1,5 +1,28 @@
+
+# PyCharm
 .idea/
+
+# Virtual environment
 .venv/
+
+# Original dataset
 T_ONTIME_REPORTING.csv
+
+# macOS
 .DS_Store
+
+# Jupyter checkpoints
 .ipynb_checkpoints/
+
+# HTML notebook exports
+*.html
+
+# Prepared datasets
+prepared_data/*.npy
+prepared_data/*.npz
+
+# Saved machine learning models
+models/*.joblib
+
+# Model evaluation CSV files
+models/*_results.csv
