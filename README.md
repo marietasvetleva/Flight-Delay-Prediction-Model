@@ -1,171 +1,188 @@
-# Flight Delay Prediction
 
-## Overview
+# Flight Delay Prediction — Machine Learning
 
-Flight delays affect passengers, airlines, airports and the wider aviation network. Delays can be caused by multiple factors, including weather conditions, airport congestion, air traffic control restrictions, airline operations and delays carried over from previous flights.
+A machine learning project focused on predicting flight delays using historical flight data from the Bureau of Transportation Statistics (BTS).
 
-This project explores these factors and applies Machine Learning to predict flight delays using historical flight and operational data.
+The project explores flight delay patterns, develops classification models and evaluates how different preprocessing and class-balancing techniques influence prediction performance.
 
-The project combines domain research, data analysis, data preprocessing, feature engineering, model development and evaluation to investigate how accurately flight delays can be predicted.
+## Project Overview
 
+Flight delays affect passengers, airlines and airport operations. Factors such as weather, congestion, airline operations and departure schedules can influence whether a flight experiences a delay.
 
+The goal of this project was to develop and evaluate machine learning models capable of classifying flights as delayed or on time, while investigating the challenges of working with imbalanced datasets.
 
-## Project Goal
+The project followed the AMD methodology, covering domain understanding, data preparation, model development, evaluation and recommendations.
 
-The main goal of this project is to develop a Machine Learning model capable of predicting whether a flight is likely to experience a delay.
+## Project Objectives
 
-The project focuses on:
+- Investigate factors associated with flight delays.
+- Explore and prepare historical flight data for machine learning.
+- Develop and evaluate classification models.
+- Investigate the impact of class imbalance on prediction performance.
+- Experiment with feature selection and data-balancing techniques.
+- Compare model performance using multiple evaluation metrics.
+- Identify limitations and recommend future improvements.
 
-- Understanding the main causes of flight delays
-- Exploring patterns within historical flight data
-- Identifying variables that influence delays
-- Preparing and transforming data for Machine Learning
-- Training and comparing prediction models
-- Evaluating model performance
-- Understanding which factors contribute most to flight delays
+## Dataset
 
+**Source:** Bureau of Transportation Statistics (BTS)
 
+The project uses historical flight and operational data to investigate flight delay prediction.
 
-## Research Questions
+Data preparation included:
 
-Before developing the prediction model, domain research is conducted to better understand flight delays and determine which variables may be relevant.
+- Exploring missing values, data types and feature distributions.
+- Selecting relevant numerical and categorical features.
+- Converting scheduled departure and arrival times into separate hour and minute features.
+- Applying one-hot encoding to categorical variables.
+- Separating the target variable from the input features.
+- Preparing training and testing datasets.
+- Experimenting with an 80/20 stratified train-test split.
 
-The research focuses on questions such as:
+The dataset contained substantially more on-time flights than delayed flights, creating a class imbalance that influenced model performance.
 
-1. What is considered a flight delay?
-2. What are the main causes of flight delays?
-3. How do time-related factors such as time of day, day of week, and season influence delays?
-4. What are the impacts of flight delays, and how can delay prediction be beneficial?
+## Machine Learning Models
 
+### 1. k-Nearest Neighbors (k-NN)
 
-## Machine Learning Workflow
+The first model was developed using the k-Nearest Neighbors algorithm as an initial baseline.
 
-The project follows a structured Machine Learning workflow:
+The model was evaluated using classification metrics and a confusion matrix.
 
-**1. Domain Understanding**  
-Research the aviation domain and understand how flight delays occur.
+**Results:**
+- Accuracy: 83.66%
+- Recall for delayed flights: 10.39%
 
-**2. Data Understanding**  
-Explore the dataset, variables, distributions, missing values and potential relationships.
+Although the model achieved relatively high accuracy, it identified only a small proportion of delayed flights.
 
-**3. Data Preparation**  
-Clean the data, handle missing values, encode categorical variables and prepare features for modelling.
+This demonstrated that accuracy alone was not a sufficient measure of performance for this classification problem.
 
-**4. Exploratory Data Analysis (EDA)**  
-Visualize patterns and investigate relationships between potential predictors and flight delays.
+### 2. Random Forest — Baseline
 
-**5. Feature Engineering & Selection**  
-Create and select relevant variables that may improve prediction performance.
+Random Forest was selected as an alternative classification algorithm to investigate whether a tree-based approach could better identify delayed flights.
 
-**6. Model Development**  
-Train Machine Learning models using the prepared dataset.
+The baseline model achieved:
 
-**7. Model Evaluation**  
-Evaluate and compare models using appropriate classification metrics.
+- Accuracy: approximately 81%
+- Recall for delayed flights: approximately 15%
 
-**8. Improvement**  
-Analyse model weaknesses and experiment with preprocessing, features and model parameters.
+Despite its reasonable overall accuracy, the model still struggled to identify the minority class.
 
+### 3. Random Forest — Class Balancing
 
+A second Random Forest model was trained to investigate whether class balancing could improve delayed-flight predictions.
+
+The balanced model did not improve recall compared with the baseline.
+
+This experiment demonstrated that class balancing does not automatically improve model performance.
+
+### 4. Random Forest — Random Undersampling
+
+To address class imbalance, Random Undersampling was applied to the training dataset by reducing the number of on-time flight observations.
+
+The original class distribution was preserved in the test dataset to evaluate performance under more realistic conditions.
+
+This approach increased recall for delayed flights from approximately 15% to 64%.
+
+However, the improvement came with lower precision and overall accuracy, as the model incorrectly classified more on-time flights as delayed.
+
+### 5. Random Forest — Feature Selection & Undersampling
+
+Feature importance was investigated to identify the most relevant predictors.
+
+The number of features was reduced from 699 to 200, and the models were evaluated with and without undersampling.
+
+The combination of **200 selected features and Random Undersampling** achieved the strongest delayed-flight recall and F1-score among the Random Forest experiments.
+
+**Results:**
+- Recall for delayed flights: 65.16%
+- Precision for delayed flights: 29.08%
+- F1-score for delayed flights: 40.22%
+
+These results demonstrate the trade-off between identifying more delayed flights and producing more false-positive predictions.
 
 ## Model Evaluation
 
-Depending on the final modelling approach, performance will be evaluated using metrics such as:
+Models were evaluated using:
 
 - Accuracy
 - Precision
 - Recall
 - F1-score
-- Confusion Matrix
+- Confusion matrices
+- Classification reports
 
-Additional metrics may be introduced as the project develops.
+Particular attention was given to **recall for delayed flights**, as identifying actual delays was an important objective of the project.
 
+### Key Findings
 
+1. **High accuracy does not guarantee effective delay prediction.** Models could achieve over 80% accuracy while missing most delayed flights.
 
-## Technologies
+2. **Class imbalance strongly influenced performance.** Models tended to favour the majority class of on-time flights.
 
-The project is primarily developed using:
+3. **Random Undersampling improved recall.** However, reducing the majority class also removed training data and increased false-positive predictions.
 
-- **Python**
-- **Jupyter Notebook**
-- **Pandas** – data manipulation and analysis
-- **NumPy** – numerical operations
-- **Matplotlib** – data visualization
-- **Scikit-learn** – preprocessing, Machine Learning and model evaluation
+4. **Feature selection influenced model performance.** Reducing the number of features provided another approach to investigate model improvement.
 
-Additional libraries may be added during development.
+5. **Model comparisons require consistent evaluation conditions.** The k-NN and Random Forest experiments used different test samples, so their results are not directly comparable under identical conditions.
 
+## Technologies Used
 
-## Repository Structure
+- **Python** — Machine learning development
+- **Jupyter Notebook** — Data exploration and experimentation
+- **Pandas** — Data manipulation and preprocessing
+- **NumPy** — Numerical operations
+- **Matplotlib** — Data visualisation
+- **Scikit-learn** — Classification models, preprocessing and evaluation
 
-```text
-flight-delay-prediction/
-│
-├── data/
-│   ├── raw/
-│   └── processed/
-│
-├── notebooks/
-│   ├── data_understanding.ipynb
-│   ├── data_preprocessing.ipynb
-│   ├── exploratory_data_analysis.ipynb
-│   └── model_development.ipynb
-│
-├── research/
-│   └── domain_research.md
-│
-├── models/
-│
-├── src/
-│
-├── requirements.txt
-├── .gitignore
-└── README.md
-```
+## Development Process
 
-The repository structure may change as the project develops.
+The project followed an iterative machine learning workflow:
 
+1. **Domain Understanding:** Researched flight delays, their causes and their operational impact.
+2. **Data Understanding:** Explored the BTS dataset, investigated variables and assessed data quality.
+3. **Data Preparation:** Cleaned and transformed the dataset, encoded categorical variables and prepared training and testing data.
+4. **Initial Modelling:** Developed and evaluated a k-NN classification model.
+5. **Algorithm Selection:** Investigated Random Forest as an alternative approach.
+6. **Model Improvement:** Experimented with class balancing, Random Undersampling and feature selection.
+7. **Evaluation:** Compared classification metrics and analysed the strengths and limitations of each approach.
+8. **Recommendations:** Identified possible improvements and assessed whether the model was suitable for practical use.
 
+## Limitations
 
-## Current Status
+The project identified several limitations:
 
-**Project Status: In Development**
+- The dataset was imbalanced, with substantially fewer delayed flights.
+- Improving recall through undersampling reduced precision.
+- Undersampling removed potentially useful training observations.
+- k-NN and Random Forest were evaluated using different test samples.
+- Additional factors, such as detailed weather conditions, could improve the available predictive information.
+- The current model performance is not sufficient to recommend deployment in a real operational environment.
 
-Current work focuses on:
+## Recommendations & Future Improvements
 
-- Flight delay domain research
-- Understanding potential delay factors
-- Dataset exploration
-- Preparing the Machine Learning approach
+Potential improvements include:
 
-The README and repository will be updated as new experiments, models and results are completed.
+- Exploring alternative approaches to handling class imbalance.
+- Experimenting with classification thresholds to improve the precision-recall trade-off.
+- Including flight data from additional months and seasons.
+- Incorporating relevant weather information.
+- Comparing algorithms using identical training and testing conditions.
+- Investigating additional feature engineering and hyperparameter tuning.
 
+## Project Status
 
+**Status: Completed — Academic Machine Learning Project**
 
-## Future Development
+The project includes data preparation, model development, experimentation, evaluation and final recommendations.
 
-Planned next steps include:
-
-- Complete exploratory data analysis
-- Finalise data preprocessing
-- Identify the most relevant predictive features
-- Train baseline Machine Learning models
-- Compare multiple algorithms
-- Perform hyperparameter tuning
-- Analyse feature importance
-- Evaluate the final model
-- Document findings and limitations
-
+Further development would be required before considering real-world implementation.
 
 ## Author
 
-**Marieta Svetleva**  
-ICT Student – AI & Machine Learning  
+**Marieta Svetleva**
+
+Bachelor of ICT - AI & Machine Learning  
 Fontys University of Applied Sciences
 
-
-## Academic Context
-
-This project is developed as part of the **AI & Machine Learning semester** within the ICT Bachelor programme at **Fontys University of Applied Sciences**.
-
-The project is intended to demonstrate the application of Machine Learning techniques to a real-world prediction problem while combining technical development with domain understanding and research.
+This project was developed as an individual academic challenge to apply machine learning techniques to a real-world classification problem.
